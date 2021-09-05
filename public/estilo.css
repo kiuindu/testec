@@ -1,7 +1,4 @@
-/* 
-CSS Adatado de https://github.com/Roger-Melo/lyrics-search/blob/master/style.css 
-@author Roger Melo 
-*/
+
 
 * {
 	box-sizing: border-box;
@@ -22,7 +19,11 @@ ul li:before {
     content: "\1F63A";
     margin: 0 0.5em;
 }
-
+#messages{
+  position: relative;
+  margin-left: 20px;
+  width: 20%;
+}
 button {
   cursor: pointer;
 }
@@ -76,4 +77,33 @@ form button {
   color: #fff;
   font-size: 16px;
   padding: 13px 30px;
+}
+
+
+
+#usuariosconectados{
+  background-color: #cccc;
+  align-content: center;
+  position: absolute;
+  display: block;
+   top: 13%;
+  left: 76.5%;
+  height: auto;
+  width: 20%;
+  
+}
+#usuariosconectados p{
+text-align: center;
+  display: block;
+margin-left: 10px;
+margin-top: 10px;
+  
+}
+#h2conectados{
+  display: flex;
+  position: absolute;
+  left: 80%;
+  top: 8%;
+  display: flex;
+  color: aqua;
 }

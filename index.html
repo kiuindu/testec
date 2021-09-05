@@ -12,15 +12,18 @@
             </form>
         </header>
         <audio id="audioSend" style="display: none;">
-            <source src="/audio/">
+            <source src="/som.mp3">
         </audio>
         <ul id='messages'></ul>
         <div id='status'></div>
-
+        <h2 id="h2conectados">Usuarios Conectados:</h2>
+        <div id="usuariosconectados">
+        </div>
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script>
             $(function(){
+
                 const socket = io()
                 socket.nickname = ''
                 var testename = ''
@@ -30,6 +33,7 @@
                         socket.nickname = $('#msg').val()
                         testename = socket.nickname
                         socket.emit('login', socket.nickname)
+                        socket.emit('patualizar','')
 
                         $('#msg').prop('placeholder', 'Digite uma mensagem');
                         $('#button1').html('Enviar');
@@ -51,6 +55,7 @@
                             socket.emit('status', '')
                         })                        
                     } else {
+                        if ($('#msg').val() == "") return false;
                         socket.emit('chat msg', $('#msg').val())
                     }
 
@@ -64,6 +69,16 @@
                  audio.play();
                     }
                     $('#messages').append($('<li>').text(msg))
+                })
+              
+                socket.on('atualizar', function(names){
+                    var nameeeeee = names
+                    console.log(nameeeeee.length)
+                    $('#usuariosconectados p').remove()
+                    for (var i = 0 ; i < nameeeeee.length ; i++) {
+                        console.log("aaaaaaaaaaaaa")
+                    $('#usuariosconectados').append($('<p>').text(nameeeeee[i]))
+                    }
                 })
             })
         </script>

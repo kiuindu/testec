@@ -42,10 +42,9 @@ app.use('/secret/',function (req,res) {
     console.log("chamando")
         res.send(eliminarbarra(req.url))
     })
+var conectados = []
 
-    app.use('/audio/',function (req,res) {
-        res.sendFile(__dirname + '/som.mp3')
-        })
+
 
 serverSocket.on('connect', function(socket){
 
@@ -53,11 +52,18 @@ serverSocket.on('connect', function(socket){
         socket.nickname = nickname
         const msg = nickname + ' conectou'
         console.log(msg)
+        conectados.push(nickname)
         serverSocket.emit('chat msg', msg)
     })
 
+    socket.on('patualizar', function (seila) { 
+        serverSocket.emit('atualizar', conectados)
+    })
+
     socket.on('disconnect', function(){
+        conectados = conectados.filter(e => e + " " !== socket.nickname + " ")
         console.log('Cliente desconectado: ' + socket.nickname)
+        serverSocket.emit('atualizar', conectados)
     })
         
     socket.on('chat msg', function(msg){
