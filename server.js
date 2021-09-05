@@ -1,9 +1,24 @@
 const express = require('express')
 const app = express()
-
 app.use(express.static("public"))
 
-const http = require('http').Server(app)
+function eliminarbarra(varlor){
+console.log("valorfinal")
+var string = String(varlor)
+var valorfinal = ""
+for (var i = 0; i < string.length ; i++) {
+    console.log("valorfinal")
+    if (string[i] != "/") {
+        valorfinal += string[i]
+    }
+}
+console.log(valorfinal)
+return valorfinal;
+}
+
+const http = require('http').Server(app),
+ms = require('mediaserver');
+
 const serverSocket = require('socket.io')(http)
 
 const porta = process.env.PORT || 8000
@@ -19,12 +34,22 @@ http.listen(porta, function(){
 })
 
 app.get('/', function (requisicao, resposta) {
-    resposta.sendFile(__dirname + '/index.html')
+    //ms.pipe(requisicao, resposta,[__dirname + '/index.html',__dirname +  "/som.mp3"]);
+resposta.sendFile(__dirname + '/index.html')
 })
 
+app.use('/secret/',function (req,res) {
+    console.log("chamando")
+        res.send(eliminarbarra(req.url))
+    })
+
+    app.use('/audio/',function (req,res) {
+        res.sendFile(__dirname + '/som.mp3')
+        })
 
 serverSocket.on('connect', function(socket){
-    socket.on('login', function (nickname) {
+
+    socket.on('login', function (nickname) { 
         socket.nickname = nickname
         const msg = nickname + ' conectou'
         console.log(msg)

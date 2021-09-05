@@ -11,6 +11,9 @@
                 <button id="button1" type='submit'>Logar</button>
             </form>
         </header>
+        <audio id="audioSend" style="display: none;">
+            <source src="/audio/">
+        </audio>
         <ul id='messages'></ul>
         <div id='status'></div>
 
@@ -20,10 +23,12 @@
             $(function(){
                 const socket = io()
                 socket.nickname = ''
+                var testename = ''
 
                 $('form').submit(function(){
                     if(socket.nickname === ''){
                         socket.nickname = $('#msg').val()
+                        testename = socket.nickname
                         socket.emit('login', socket.nickname)
 
                         $('#msg').prop('placeholder', 'Digite uma mensagem');
@@ -54,6 +59,10 @@
                 })
 
                 socket.on('chat msg', function(msg){
+                    if (msg.search(testename) == -1) {
+                    var audio = document.getElementById('audioSend');
+                 audio.play();
+                    }
                     $('#messages').append($('<li>').text(msg))
                 })
             })
