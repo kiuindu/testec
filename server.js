@@ -1,33 +1,47 @@
-const express = require('express');
-const path = require('path');
+const express = require('express')
+const app = express()
 
-const app = express();
-//const server = require('http').createServer(app);
-const io = require('socket.io')(3000);
+app.use(express.static("public"))
 
-app.use(express.static(path.join(__dirname, 'public')));
-app.set('views', path.join(__dirname, 'public'));
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
+const http = require('http').Server(app)
+const serverSocket = require('socket.io')(http)
 
-app.use('/', (req, res) => {
-    res.render('index.html');
+const porta = process.env.PORT || 8000
+
+const host = process.env.HEROKU_APP_NAME ? `https://${process.env.HEROKU_APP_NAME}.herokuapp.com` : "http://localhost"
+
+http.listen(porta, function(){
+    const portaStr = porta === 80 ? '' :  ':' + porta
+
+    if (process.env.HEROKU_APP_NAME) 
+        console.log('Servidor iniciado. Abra o navegador em ' + host)
+    else console.log('Servidor iniciado. Abra o navegador em ' + host + portaStr)
 })
 
-let messages = [];
+app.get('/', function (requisicao, resposta) {
+    resposta.sendFile(__dirname + '/index.html')
+})
 
-io.on('connection', socket => {
-    console.log(`Socket conectado: ${socket.id}`);
 
-    socket.on('sendMessage', data => {
+serverSocket.on('connect', function(socket){
+    socket.on('login', function (nickname) {
+        socket.nickname = nickname
+        const msg = nickname + ' conectou'
+        console.log(msg)
+        serverSocket.emit('chat msg', msg)
+    })
 
-        messages.push(data);
+    socket.on('disconnect', function(){
+        console.log('Cliente desconectado: ' + socket.nickname)
+    })
+        
+    socket.on('chat msg', function(msg){
+        serverSocket.emit('chat msg', `${socket.nickname} diz: ${msg}`)
+    })
 
-        socket.broadcast.emit('receivedMessage', data);
-      
+    socket.on('status', function(msg){
+        console.log(msg)
+        socket.broadcast.emit('status', msg)
     })
 })
-
-// server.listen(3000, '10.0.0.24');
-//server.listen(3000);
 
