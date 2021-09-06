@@ -32,7 +32,9 @@
                     if(socket.nickname === ''){
                         socket.nickname = $('#msg').val()
                         testename = socket.nickname
+                        if (socket.nickname != "") {
                         socket.emit('login', socket.nickname)
+                        }
                         socket.emit('patualizar','')
 
                         $('#msg').prop('placeholder', 'Digite uma mensagem');
