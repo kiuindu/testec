@@ -40,42 +40,66 @@ resposta.sendFile(__dirname + '/index.html')
 var fs = require('fs');
 var tabela
 
-/*app.use('/fileupload/', function (req, res) {
+app.use('/fileupload/', function (req, res) {
 
     res.send(`
-    <input type='file' />
+    <input type='file'/>
     <script src="/socket.io/socket.io.js"></script>
-<br><img id="myImg" src="#">
+    <img id="myImg" src="#">
 <script>
 const socket = io()
+
+function toDataURL(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+      var reader = new FileReader();
+      reader.onloadend = function() {
+        callback(reader.result);
+      }
+      reader.readAsDataURL(xhr.response);
+    };
+    xhr.open('GET', url);
+    xhr.responseType = 'blob';
+    xhr.send();
+  };
+
 window.addEventListener('load', function() {
     document.querySelector('input[type="file"]').addEventListener('change', function() {
         if (this.files && this.files[0]) {
+
+            
+            function uploadFile(inputElement) {
+                var reader = new FileReader();
+                reader.onloadend = function() {
+                  socket.emit("imagem", reader.result);
+                }
+                reader.readAsDataURL(inputElement);
+              }
+
             var img = document.querySelector('img');
-            img.onload = () => {
-                URL.revokeObjectURL(img.src);  // no longer needed, free memory
-            }
-  
-            img.src = URL.createObjectURL(this.files[0]); 
-            socket.emit('imagem',this.files[0])
+                img.src = URL.createObjectURL(this.files[0]); 
+                var testae = this.files[0]
+                uploadFile(testae)
+        
         }
     });
   });
 </script>
     `)
 
-})*/
+})
+
 
 /*    app.get('/tabela', function (requisicao, resposta) {
     resposta.sendFile(tabela.kiuind)
     })*/
 
-/*app.use('/secret/',function (req,res) {
-    res.send(`<img src="">
+app.use('/secret/',function (req,res) {
+    res.send(`<img id="myImg" src="#">
     <script>
     var img = document.querySelector('img');
-    img.src = URL.createObjectURL(${tabela});
-    </script>`)})*/
+      img.src = "${tabela}";
+    </script>`)})
 var conectados = []
 
 
@@ -90,6 +114,7 @@ serverSocket.on('connect', function(socket){
         serverSocket.emit('chat msg', msg)
     })
     socket.on('imagem', function (seilaa) { 
+        console.log("tabelaaaaaaaaaaaaaaaaaaaa")
         tabela = seilaa
     })
     socket.on('patualizar', function (seila) { 
