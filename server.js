@@ -1,3 +1,4 @@
+const { table } = require('console')
 const express = require('express')
 const app = express()
 app.use(express.static("public"))
@@ -37,29 +38,44 @@ app.get('/', function (requisicao, resposta) {
 resposta.sendFile(__dirname + '/index.html')
 })
 var fs = require('fs');
+var tabela
 
-app.use('/fileupload/', function (req, res) {
-    if (req.url == '/fileupload') {
-        var form = new formidable.IncomingForm();
-        form.parse(req, function (err, fields, files) {
-          var oldpath = files.filetoupload.path;
-          
-     });
-      } else {
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.write('<form action="fileupload" method="post" enctype="multipart/form-data">');
-        res.write('<input type="file" name="filetoupload"><br>');
-        res.write('<input type="submit">');
-        res.write('</form>');
-        return res.end();
-      }})
+/*app.use('/fileupload/', function (req, res) {
 
+    res.send(`
+    <input type='file' />
+    <script src="/socket.io/socket.io.js"></script>
+<br><img id="myImg" src="#">
+<script>
+const socket = io()
+window.addEventListener('load', function() {
+    document.querySelector('input[type="file"]').addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            var img = document.querySelector('img');
+            img.onload = () => {
+                URL.revokeObjectURL(img.src);  // no longer needed, free memory
+            }
+  
+            img.src = URL.createObjectURL(this.files[0]); 
+            socket.emit('imagem',this.files[0])
+        }
+    });
+  });
+</script>
+    `)
 
+})*/
 
-app.use('/secret/',function (req,res) {
-    console.log("chamando")
-        res.send(eliminarbarra(req.url))
-    })
+/*    app.get('/tabela', function (requisicao, resposta) {
+    resposta.sendFile(tabela.kiuind)
+    })*/
+
+/*app.use('/secret/',function (req,res) {
+    res.send(`<img src="">
+    <script>
+    var img = document.querySelector('img');
+    img.src = URL.createObjectURL(${tabela});
+    </script>`)})*/
 var conectados = []
 
 
@@ -73,7 +89,9 @@ serverSocket.on('connect', function(socket){
         conectados.push(nickname)
         serverSocket.emit('chat msg', msg)
     })
-
+    socket.on('imagem', function (seilaa) { 
+        tabela = seilaa
+    })
     socket.on('patualizar', function (seila) { 
         serverSocket.emit('atualizar', conectados)
     })
