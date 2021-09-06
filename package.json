@@ -5,6 +5,7 @@
   "main": "server.js",
   "dependencies": {
     "express": "^4.16.4",
+    "formidable": "^1.2.2",
     "fs": "0.0.1-security",
     "mediaserver": "^0.1.1",
     "path": "^0.12.7",
