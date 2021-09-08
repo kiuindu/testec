@@ -52,7 +52,6 @@ button {
   top: calc(115px - 21px);  
 }
 #fotos div {  
-  position: relative;
   margin-top: 30px;
   left: 16px;
 
@@ -67,6 +66,8 @@ input:focus, button:focus {
 
 header {
   display: flex;
+  height: 65px;
+  width: 100%;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -83,9 +84,11 @@ header h1 {
 }
 
 form {
-  position: relative;
+  position: fixed;
+  height: 48px;
+  width: 100%;
+  top: 15px;
   width: 500px;
-  max-width: 100%;
 }
 
 form input {
