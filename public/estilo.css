@@ -14,20 +14,49 @@ ul {
     list-style: none;
     text-indent: -2em; 
 }
+input[type='file'] {
+  display: none
+}
 
+label {
+  background-color: #3498db;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  margin: 10px;
+  padding: 6px 20px
+}
+li {
+  position: relative;
+  margin-top: calc(45px + 12px);
+  margin-left: 45px;
+}
 ul li:before {
-    content: "\1F63A";
-    margin: 0 0.5em;
+    content: none;
+    margin: 0 auto;
+    
 }
 #messages{
-  position: relative;
-  margin-left: 20px;
-  width: 20%;
+  position: absolute;
+  left: 20px;
+  width: auto;
+  height: auto;
 }
 button {
   cursor: pointer;
 }
+#fotos {
+  position: absolute;
+  width: 10%;
+  height: 10%;
+  top: calc(115px - 21px);  
+}
+#fotos div {  
+  position: relative;
+  margin-top: 30px;
+  left: 16px;
 
+}
 button:active {
   transform: scale(0.95);
 }
@@ -79,7 +108,9 @@ form button {
   padding: 13px 30px;
 }
 
-
+li {
+  background-image: none;
+}
 
 #usuariosconectados{
   background-color: #cccc;

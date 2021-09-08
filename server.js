@@ -32,13 +32,12 @@ http.listen(porta, function(){
         console.log('Servidor iniciado. Abra o navegador em ' + host)
     else console.log('Servidor iniciado. Abra o navegador em ' + host + portaStr)
 })
+var tabela = {}
 
 app.get('/', function (requisicao, resposta) {
-    //ms.pipe(requisicao, resposta,[__dirname + '/index.html',__dirname +  "/som.mp3"]);
 resposta.sendFile(__dirname + '/index.html')
 })
 var fs = require('fs');
-var tabela
 
 app.use('/fileupload/', function (req, res) {
 
@@ -95,27 +94,52 @@ window.addEventListener('load', function() {
     })*/
 
 app.use('/secret/',function (req,res) {
-    res.send(`<img id="myImg" src="#">
-    <script>
-    var img = document.querySelector('img');
-      img.src = "${tabela}";
-    </script>`)})
+    res.write(`
+    <body>
+    <img id="myImg" src="#">
+    <style>
+    html {
+        background-image: "";
+    }
+    </style>
+    </body>
+    `
+    );
+    res.write(`
+    <body>
+<style>
+body {
+    background-image: "";
+}
+</style>
+<script>
+var img = document.querySelector('img');
+  img.src = "${tabela}";
+  var teste = document.querySelector('html')
+  teste.style.backgroundImage = 'url("${tabela}")'
+</script>
+</body>
+`)
+})
 var conectados = []
 
 
 
 serverSocket.on('connect', function(socket){
-
+var nickeaaaaa = ""
     socket.on('login', function (nickname) { 
         socket.nickname = nickname
         const msg = nickname + ' conectou'
         console.log(msg)
         conectados.push(nickname)
-        serverSocket.emit('chat msg', msg)
+        tabela[String(nickname)] = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQI_xsOsL-LdG3gdKQ51EVDthcUoP0PqYp3qQ&usqp=CAU"
+        serverSocket.emit('atualizarimg', tabela)
+        serverSocket.emit('chat msg', [msg,String(socket.nickname)])
+        nickeaaaaa = nickname
     })
     socket.on('imagem', function (seilaa) { 
-        console.log("tabelaaaaaaaaaaaaaaaaaaaa")
-        tabela = seilaa
+        tabela[nickeaaaaa] = seilaa
+        serverSocket.emit('atualizarimg', tabela)
     })
     socket.on('patualizar', function (seila) { 
         serverSocket.emit('atualizar', conectados)
@@ -128,7 +152,8 @@ serverSocket.on('connect', function(socket){
     })
         
     socket.on('chat msg', function(msg){
-        serverSocket.emit('chat msg', `${socket.nickname} diz: ${msg}`)
+        console.log(socket.nickname)
+        serverSocket.emit('chat msg', [`${socket.nickname} diz: ${msg}`,String(socket.nickname)])
     })
 
     socket.on('status', function(msg){

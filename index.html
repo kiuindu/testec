@@ -15,18 +15,25 @@
             <source src="/som.mp3">
         </audio>
         <ul id='messages'></ul>
+        <div id="fotos">
+
+        </div>
         <div id='status'></div>
         <h2 id="h2conectados">Usuarios Conectados:</h2>
         <div id="usuariosconectados">
         </div>
+        <label for='selecao-arquivo'>Selecionar um arquivo &#187;</label>
+        <input id='selecao-arquivo' type='file'>
+        <img id="myImg" src="">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script>
             $(function(){
-
+                var imagens = {}
                 const socket = io()
                 socket.nickname = ''
                 var testename = ''
+                var cont = 1
 
                 $('form').submit(function(){
                     if(socket.nickname === ''){
@@ -34,6 +41,8 @@
                         testename = socket.nickname
                         if (socket.nickname != "") {
                         socket.emit('login', socket.nickname)
+                        var iiii = document.querySelector('input[type="file"]')
+                        iiii.style.display = "none"
                         } else {
                             return;
                         }
@@ -68,12 +77,25 @@
                 })
 
                 socket.on('chat msg', function(msg){
-                    if (msg.search(testename) == -1) {
+                    if (msg[0].search(testename) == -1) {
                     var audio = document.getElementById('audioSend');
                  audio.play();
                     }
-                    $('#messages').append($('<li>').text(msg))
-                })
+                    $('#messages').append($('<li>').text(msg[0]))
+                        if (imagens != "a") {
+                        $("#fotos").append($(`<div id="${"imagens" + cont}"></div>`))
+                        var imll = document.getElementById("imagens" + cont)
+                        cont = cont + 1
+                        console.log(imagens[String(msg[1])])
+                        console.log(msg[1])
+                        imll.style.backgroundImage = `url('${imagens[String(msg[1])]}')`;
+                        imll.style.backgroundSize = "cover";
+                        imll.style.backgroundRepeat = "no-repeat";
+                        imll.style.width = "45px";
+                        imll.style.height = "45px";
+                        imll.style.borderRadius = "50%";
+
+                }})
               
                 socket.on('atualizar', function(names){
                     var nameeeeee = names
@@ -84,6 +106,43 @@
                     $('#usuariosconectados').append($('<p>').text(nameeeeee[i]))
                     }
                 })
+                socket.on('atualizarimg', function(msga){
+                        imagens = msga
+                        console.log(imagens)
+                })
+                function toDataURL(url, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+          var reader = new FileReader();
+          reader.onloadend = function() {
+            callback(reader.result);
+          }
+          reader.readAsDataURL(xhr.response);
+        };
+        xhr.open('GET', url);
+        xhr.responseType = 'blob';
+        xhr.send();
+      };
+    
+    window.addEventListener('load', function() {
+        document.querySelector('#selecao-arquivo').addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+    
+                
+                function uploadFile(inputElement) {
+                    var reader = new FileReader();
+                    reader.onloadend = function() {
+                        console.log(reader.result)
+                      socket.emit("imagem", reader.result);
+                    }
+                    reader.readAsDataURL(inputElement);
+                  }
+                    var testae = this.files[0]
+                    uploadFile(testae)
+            
+            }
+        });
+      });
             })
         </script>
     </body>
