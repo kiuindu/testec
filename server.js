@@ -158,7 +158,7 @@ var nickeaaaaa = ""
 
     socket.on('status', function(msg){
         console.log(msg)
-        socket.broadcast.emit('status', msg)
+        serverSocket.emit('status', msg)
     })
 })
 
